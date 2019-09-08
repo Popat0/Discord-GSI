@@ -1,4 +1,4 @@
-//META{"name":"AuroraGSI"}*//
+//META{"name":"AuroraGSI","website":"http://www.project-aurora.com/","source":"https://github.com/Popat0/Discord-GSI/blob/master/AuroraGSI.plugin.js"}*//
 
 class AuroraGSI {
 	
@@ -64,7 +64,7 @@ class AuroraGSI {
 			lib = document.createElement("script");
 			lib.setAttribute("id", "NeatoBurritoLibrary");
 			lib.setAttribute("type", "text/javascript");
-			lib.setAttribute("src", "https://raw.githubusercontent.com/Popat0/Discord-GSI/master/NeatoBurritoLibrary.js");
+			lib.setAttribute("src", "https://cdn.jsdelivr.net/gh/Popat0/Discord-GSI/NeatoBurritoLibrary.js");
 			document.head.appendChild(lib);
 		}
         if(typeof window.Metalloriff !== "undefined") libLoadedEvent();
@@ -81,8 +81,7 @@ class AuroraGSI {
 	onLibLoaded() {
         
         this.settings = NeatoLib.Settings.load(this, this.defaultSettings);
-
-        NeatoLib.Updates.check(this);
+		NeatoLib.Updates.check(this, "https://raw.githubusercontent.com/Popat0/Discord-GSI/master/AuroraGSI.plugin.js");
 
         if(this.settings.displayUpdateNotes) NeatoLib.Changelog.compareVersions(this.getName(), this.getChanges());
 
