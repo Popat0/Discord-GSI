@@ -5,7 +5,7 @@ class AuroraGSI {
     getName() { return "AuroraGSI"; }
     getDescription() { return "Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status"; }
     getVersion() { return "1.0.1"; }
-	getAuthor() { return "Popato"; }
+	getAuthor() { return "Popato & DrMeteor"; }
 	getChanges() {
 		return {
             "1.0.0" : 
@@ -64,7 +64,7 @@ class AuroraGSI {
 			lib = document.createElement("script");
 			lib.setAttribute("id", "NeatoBurritoLibrary");
 			lib.setAttribute("type", "text/javascript");
-			lib.setAttribute("src", "https://rawgit.com/Metalloriff/BetterDiscordPlugins/master/Lib/NeatoBurritoLibrary.js");
+			lib.setAttribute("src", "https://raw.githubusercontent.com/Popat0/Discord-GSI/master/NeatoBurritoLibrary.js");
 			document.head.appendChild(lib);
 		}
         if(typeof window.Metalloriff !== "undefined") libLoadedEvent();
