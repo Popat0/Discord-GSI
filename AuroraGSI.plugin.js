@@ -74,6 +74,7 @@ class AuroraGSI {
     stop() {
         clearInterval(this.jsonTimer);
         clearInterval(this.updatetimer);
+		this.unpatch();
         this.ready = false;
     }
     
@@ -88,8 +89,8 @@ class AuroraGSI {
         let getVoiceStates = NeatoLib.Modules.get(["getVoiceState"]).getVoiceStates,
             getUser = NeatoLib.Modules.get(["getUser"]).getUser,
             getChannel = NeatoLib.Modules.get(["getChannel"]).getChannel;
-
-        this.jsonTimer = setInterval( this.sendJsonToAurora, 50, this.json );
+		
+		this.jsonTimer = setInterval( this.sendJsonToAurora, 50, this.json );
 
         this.updatetimer = setInterval(() => { 
             var self = this;
@@ -194,10 +195,10 @@ class AuroraGSI {
 			
         }, 100);
 		
-        NeatoLib.Events.onPluginLoaded(this);
+        //NeatoLib.Events.onPluginLoaded(this);
     }
 
-    sendJsonToAurora(json) {
+    async sendJsonToAurora(json) {
         fetch('http://localhost:9088/', {
             method: 'POST',
             body: JSON.stringify(json),
@@ -205,6 +206,9 @@ class AuroraGSI {
             headers:{
                 'Content-Type': 'application/json'
             }
-        });
+        })
+		.catch (error => {
+			return undefined;
+		});
     }
 }
