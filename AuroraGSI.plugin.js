@@ -28,7 +28,7 @@ class AuroraGSI {
 	
     getName() { return "AuroraGSI"; }
     getDescription() { return "Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status"; }
-    getVersion() { return "1.0.1"; }
+    getVersion() { return "1.0.2"; }
 	getAuthor() { return "Popato & DrMeteor"; }
 	getChanges() {
 		return {
@@ -39,6 +39,11 @@ class AuroraGSI {
             "1.0.1" :
             `
                 Added conditions for only reacting to local user.
+            `,
+            "1.0.2" :
+            `
+                Removed isBeingCalled.
+				Removed redundant loop.
             `
 		};
     }
@@ -96,9 +101,8 @@ class AuroraGSI {
     }
     
     stop() {
-        clearInterval(this.jsonTimer);
         clearInterval(this.updatetimer);
-		this.unpatch();
+		//this.unpatch();
         this.ready = false;
     }
     
@@ -113,7 +117,7 @@ class AuroraGSI {
             getUser = NeatoLib.Modules.get(["getUser"]).getUser,
             getChannel = NeatoLib.Modules.get(["getChannel"]).getChannel;
 		
-		this.jsonTimer = setInterval( this.sendJsonToAurora, 50, this.json );
+		// this.jsonTimer = setInterval( this.sendJsonToAurora, 50, this.json );
 
         this.updatetimer = setInterval(() => { 
             var self = this;
@@ -201,24 +205,19 @@ class AuroraGSI {
                 }        
             }
 			
-			self.json.user.being_called = false;
 			self.json.user.unread_messages = false;
 			self.json.user.mentions = false;
-			
-			this.unpatch = NeatoLib.monkeyPatchInternal(NeatoLib.Modules.get("isMentioned"), "isMentioned", e => {
-				if (e.args[0].call != null) {
-					self.json.user.being_called = true;
-				}
-			});
 			
 			if (document.querySelector('[class^="numberBadge-"]'))
 				self.json.user.mentions = true;
 			if (document.getElementsByClassName("bd-unread").length > 0)
 				self.json.user.unread_messages = true;
 			
+			this.sendJsonToAurora (this.json);
+			
         }, 100);
 		
-        //NeatoLib.Events.onPluginLoaded(this);
+        NeatoLib.Events.onPluginLoaded(this);
     }
 
     async sendJsonToAurora(json) {
