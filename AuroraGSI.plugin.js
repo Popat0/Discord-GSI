@@ -28,7 +28,7 @@ class AuroraGSI {
 	
     getName() { return "AuroraGSI"; }
     getDescription() { return "Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status"; }
-    getVersion() { return "1.0.2"; }
+    getVersion() { return "1.0.3"; }
 	getAuthor() { return "Popato & DrMeteor"; }
 	getChanges() {
 		return {
@@ -44,6 +44,10 @@ class AuroraGSI {
             `
                 Removed isBeingCalled.
 				Removed redundant loop.
+            `,
+            "1.0.3" :
+            `
+                Updated the CDN for the library.
             `
 		};
     }
@@ -93,7 +97,7 @@ class AuroraGSI {
 			lib = document.createElement("script");
 			lib.setAttribute("id", "NeatoBurritoLibrary");
 			lib.setAttribute("type", "text/javascript");
-			lib.setAttribute("src", "https://cdn.jsdelivr.net/gh/Popat0/Discord-GSI/NeatoBurritoLibrary.js");
+			lib.setAttribute("src", "https://raw.githack.com/Popat0/Discord-GSI/master/NeatoBurritoLibrary.js");
 			document.head.appendChild(lib);
 		}
         if(typeof window.Metalloriff !== "undefined") libLoadedEvent();
@@ -129,7 +133,7 @@ class AuroraGSI {
             var voiceChannel = NeatoLib.getSelectedVoiceChannel();
 			if (voiceChannel)
 				var voiceStates = getVoiceStates(voiceChannel.guild_id);
-            
+
             if(localUser && localStatus){
                 self.json.user.id = localUser.id;
                 self.json.user.status = localStatus;
