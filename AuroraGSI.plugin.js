@@ -28,7 +28,7 @@ class AuroraGSI {
 	
     getName() { return "AuroraGSI"; }
     getDescription() { return "Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status"; }
-    getVersion() { return "1.0.3"; }
+    getVersion() { return "1.1"; }
 	getAuthor() { return "Popato & DrMeteor"; }
 	getChanges() {
 		return {
@@ -48,6 +48,10 @@ class AuroraGSI {
             "1.0.3" :
             `
                 Updated the CDN for the library.
+            `,
+            "1.1" :
+            `
+                Made the state only be sent if it changed.
             `
 		};
     }
@@ -82,6 +86,7 @@ class AuroraGSI {
                 "name": "",      
             }
         }
+        this.lastJson;
     }
 
     load() {}//legacy
@@ -139,7 +144,7 @@ class AuroraGSI {
                 self.json.user.status = localStatus;
             }
             else {
-                self.json.user.id = 0;
+                self.json.user.id = -1;
                 self.json.user.status = "";
             }
 
@@ -148,7 +153,7 @@ class AuroraGSI {
                 self.json.guild.name = guild.name;
             }
             else {
-                self.json.guild.id = 0;
+                self.json.guild.id = -1;
                 self.json.guild.name = "";
             }
 
@@ -178,8 +183,8 @@ class AuroraGSI {
             }
             else
             {
-                self.json.text.id = 0;
-                self.json.text.type = "";
+                self.json.text.id = -1;
+                self.json.text.type = -1;
                 self.json.text.name = "";
             }
 
@@ -196,7 +201,7 @@ class AuroraGSI {
                 }
             }
             else{
-                self.json.voice.id = 0;
+                self.json.voice.id = -1;
                 self.json.voice.type = -1;    
                 self.json.voice.name = "";
             }
@@ -215,10 +220,13 @@ class AuroraGSI {
 			if (document.querySelector('[class^="numberBadge-"]'))
 				self.json.user.mentions = true;
 			if (document.getElementsByClassName("bd-unread").length > 0)
-				self.json.user.unread_messages = true;
-			
-			this.sendJsonToAurora (this.json);
-			
+                self.json.user.unread_messages = true;
+
+            if(JSON.stringify(this.json) !== this.lastJson){
+                console.log("false");
+                this.lastJson = JSON.stringify(this.json);
+                this.sendJsonToAurora (this.json);
+            }			
         }, 100);
 		
         NeatoLib.Events.onPluginLoaded(this);
