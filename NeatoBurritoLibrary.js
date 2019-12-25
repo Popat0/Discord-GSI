@@ -1,6 +1,8 @@
+// Forked from https://github.com/Metalloriff/BetterDiscordPlugins/
+
 var NeatoLib = {
 
-	version: "0.9.26",
+	version: "0.9.28",
 
 	parseVersion: function(version) {
 
@@ -1939,31 +1941,68 @@ var NeatoLib = {
 		createSubMenu: function(label, items, options = {}) {
 
 			let element = document.createElement("div");
+			element.classList.add(this.classes.itemSubMenu.split(" ")[0], this.classes.itemBase.split(" ")[0], this.classes.clickable.split(" ")[0]);
 
-			element.classList.add(this.classes.item.split(" ")[0], this.classes.itemSubMenu.split(" ")[0]);
+			let le = document.createElement("div");
+			le.classList.add(this.classes.label.split(" ")[0]);
+			le.innerText = label;
 
-			element.innerText = label;
+			element.appendChild(le);
+			
+			element.insertAdjacentHTML("beforeend", `
+				<svg class="caret-UIZBlm da-caret" width="24" height="24" viewBox="0 0 24 24">
+					<path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M16.59 8.59004L12 13.17L7.41 8.59004L6 10L12 16L18 10L16.59 8.59004Z"></path>
+				</svg>
+			`);
 
 			if (options.color) element.style.color = options.color;
-
 			if (options.hint) element.innerHTML += `<div class="${this.classes.hint}">${options.hint}</div>`;
+			if (options.callback) 
+				element.addEventListener("click", e => {
+					if (e.target.parentElement == element) options.callback(e);
+				});
 
-			if (options.callback) element.addEventListener("click", e => {
-				if (e.target == element) options.callback(e);
-			});
+			let sm, hoveringOver;
 
 			element.addEventListener("mouseenter", () => {
-				if (element.getElementsByTagName("div")[0]) return element.getElementsByTagName("div")[0].style.display = "inline-block";
+				let layer = document.createElement("div");
+				layer.classList.add(NeatoLib.getClass("layer"), "neato-cl");
+
+				layer.style.left = (element.getBoundingClientRect().width) + "px";
+				layer.style.top = (element.getBoundingClientRect().y - NeatoLib.DOM.searchForParentElementByClassName(element, NeatoLib.getClass("itemSubMenu")).getBoundingClientRect().y) + "px";
+
+				let subMenu = document.createElement("div");
+				subMenu.classList.add(this.classes.subMenuContext.split(" ")[0]);
+
 				let menu = document.createElement("div");
-				menu.style.left = element.parentElement.getBoundingClientRect().left + "px";
-				menu.style.top = element.getBoundingClientRect().top + "px";
-				menu.classList.add(this.classes.contextMenu.split(" ")[0], document.getElementsByClassName("theme-dark")[0] != undefined ? "theme-dark" : "theme-light");
+
+				menu.classList.add(this.classes.contextMenu.split(" ")[0]);
+
 				for (let i = 0; i < items.length; i++) menu.appendChild(items[i]);
-				element.appendChild(menu);
+
+				subMenu.appendChild(menu);
+
+				layer.appendChild(subMenu);
+
+				document.getElementsByClassName(NeatoLib.getClass("layerContainer"))[0].appendChild(layer);
+
+				sm = layer;
+
+				subMenu.addEventListener("mouseenter", e => {
+					hoveringOver = subMenu;
+				});
+
+				subMenu.addEventListener("mouseleave", () => {
+					setTimeout(() => {
+						if (hoveringOver == subMenu) hoveringOver = null;
+					}, 0);
+				});
+
+				element.appendChild(layer);
 			});
 
 			element.addEventListener("mouseleave", () => {
-				if (element.getElementsByTagName("div")[0]) element.getElementsByTagName("div")[0].style.display = "none";
+				if (sm && !hoveringOver) sm.remove();
 			});
 
 			return element;
@@ -1974,7 +2013,7 @@ var NeatoLib = {
 
 			let element = document.createElement("div");
 
-			element.classList.add(this.classes.item.split(" ")[0], this.classes.itemToggle.split(" ")[0]);
+			element.classList.add(this.classes.item.split(" ")[0], this.classes.itemBase.split(" ")[0], this.classes.itemToggle.split(" ")[0]);
 
 			element.innerHTML = `
 				<div class="${this.classes.label}">${label}</div>
@@ -2541,7 +2580,7 @@ var NeatoLib = {
 
 		if (!document.getElementsByClassName("toasts").length) {
 
-			const container = document.getElementsByClassName(NeatoLib.Modules.get("guilds").guilds)[0].nextSibling,
+			const container = document.getElementsByClassName(NeatoLib.Modules.get(['sidebar', 'guilds']).guilds)[0].nextSibling,
 				memberlist = container.getElementsByClassName(NeatoLib.Modules.get("membersWrap").membersWrap)[0],
 				form = container ? container.getElementsByTagName("form")[0] : undefined,
 				left = container ? container.getBoundingClientRect().left : 310,
@@ -2767,7 +2806,7 @@ window.neatoObserver = new MutationObserver(mutations => {
 
 		if ((added.classList.contains(NeatoLib.getClass("message")) && !added.className.includes("sending")) || added.classList.contains(NeatoLib.getClass("containerCozy", "container"))) call("message");
 
-		if (window.neatoObserver.addedTextarea != (window.neatoObserver.addedTextarea = added.getElementsByClassName(NeatoLib.getClass("textAreaEdit", "textArea"))[0]) && window.neatoObserver.addedTextarea) call("chatbox", window.neatoObserver.addedTextarea);
+		if (window.neatoObserver.addedTextarea != (window.neatoObserver.addedTextarea = added.getElementsByClassName(NeatoLib.getClass("textArea"))[0]) && window.neatoObserver.addedTextarea) call("chatbox", window.neatoObserver.addedTextarea);
 
 	}
 
@@ -2806,7 +2845,7 @@ document.addEventListener("contextmenu", window.neatoContextEvent = e => {
 
 	let rect = cm.getBoundingClientRect();
 
-	if (rect.height + rect.y > window.innerHeight) cm.style.top = `calc(${rect.y}px - ${rect.height + rect.y - window.innerHeight}px)`;
+	if (rect.height + rect.y > window.innerHeight) cm.parentElement.style.top = `calc(${rect.y}px - ${rect.height + rect.y - window.innerHeight}px)`;
 });
 
 if (window.neatoStyles) window.neatoStyles.destroy();
