@@ -28,7 +28,7 @@ class AuroraGSI {
 	
     getName() { return "AuroraGSI"; }
     getDescription() { return "Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status"; }
-    getVersion() { return "2.1"; }
+    getVersion() { return "2.1.0"; }
 	getAuthor() { return "Popato & DrMeteor"; }
 	getChanges() {
 		return {
@@ -57,10 +57,11 @@ class AuroraGSI {
             `
                 Version bump to stop the update prompt derping.
             `,
-            "2.1":
+            "2.1.0":
             `
                 Allow to track mute/deafen statuses outside voice channels.
                 Fix unread status for Enhanced Discord users.
+                Actually fix self-updating loop
             `
 		};
     }
