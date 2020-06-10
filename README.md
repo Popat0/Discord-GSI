@@ -1,6 +1,7 @@
 # [Discord-GSI](https://github.com/Popat0/Discord-GSI) 
 #### by Popat0 and DrMeteor
-This is a BetterDiscord plugin that is required for Aurora to communicate with BetterDiscord. **Do not try to run it directly.** Please refer to the step by step guide below.
+This is a BetterDiscord plugin that is required for Aurora to communicate with BetterDiscord and EnhancedDiscord.
+**It is discouraged to try and run it directly.** Please refer to the step by step guide below instead.
 
 ## How to Install
 1. Make sure BetterDiscord is running on your Discord client.
