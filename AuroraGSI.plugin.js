@@ -28,7 +28,7 @@ class AuroraGSI {
 	
     getName() { return "AuroraGSI"; }
     getDescription() { return "Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status"; }
-    getVersion() { return "2.0"; }
+    getVersion() { return "2.1"; }
 	getAuthor() { return "Popato & DrMeteor"; }
 	getChanges() {
 		return {
