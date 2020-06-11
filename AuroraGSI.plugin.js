@@ -28,7 +28,7 @@ class AuroraGSI {
 	
     getName() { return "AuroraGSI"; }
     getDescription() { return "Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status"; }
-    getVersion() { return "2.1.0"; }
+    getVersion() { return "2.1.1"; }
 	getAuthor() { return "Popato & DrMeteor"; }
 	getChanges() {
 		return {
@@ -62,6 +62,10 @@ class AuroraGSI {
                 Allow to track mute/deafen statuses outside voice channels.
                 Fix unread status for Enhanced Discord users.
                 Actually fix self-updating loop
+            `,
+            "2.1.1":
+            `
+                Fix "being_called" boolean so it's now usable (triggers when user calls and getting called in DMs)
             `
 		};
     }
@@ -135,6 +139,7 @@ class AuroraGSI {
         let getVoiceStates = NeatoLib.Modules.get(["getVoiceState"]).getVoiceStates,
             getUser = NeatoLib.Modules.get(["getUser"]).getUser,
             getChannel = NeatoLib.Modules.get(["getChannel"]).getChannel,
+	      getCalls = NeatoLib.Modules.get(["getCalls"]).getCalls,
             getLanguage = document.documentElement.lang;
 		
 		// this.jsonTimer = setInterval( this.sendJsonToAurora, 50, this.json );
@@ -348,6 +353,8 @@ class AuroraGSI {
 				self.json.user.mentions = true;
             if (Object.values(NeatoLib.Modules.get("getUnreadGuilds").getUnreadGuilds()).length > 0)
                 self.json.user.unread_messages = true;
+            if (getCalls().filter(function(x){return x.ringing.length > 0;}).length > 0)
+		  self.json.user.being_called = true;
 
             if(JSON.stringify(this.json) !== this.lastJson){
                 console.log("false");
