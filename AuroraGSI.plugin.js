@@ -28,7 +28,7 @@ class AuroraGSI {
 	
     getName() { return "AuroraGSI"; }
     getDescription() { return "Sends information to Aurora about users connecting to/disconnecting from, mute/deafen status"; }
-    getVersion() { return "2.1.1"; }
+    getVersion() { return "2.1.2"; }
 	getAuthor() { return "Popato & DrMeteor"; }
 	getChanges() {
 		return {
@@ -66,6 +66,10 @@ class AuroraGSI {
             "2.1.1":
             `
                 Fix "being_called" boolean so it's now usable (triggers when user calls and getting called in DMs)
+            `,
+            "2.1.2":
+            `
+                Fix "being_called" boolean so it's reset to false outside of calls.
             `
 		};
     }
@@ -346,11 +350,12 @@ class AuroraGSI {
             self.json.user.self_mute = document.querySelector(mute).getAttribute("aria-checked");
             self.json.user.self_deafen = document.querySelector(deafen).getAttribute("aria-checked");
 			
-			self.json.user.unread_messages = false;
-			self.json.user.mentions = false;
-			
-			if (document.querySelector('[class^="numberBadge-"]'))
-				self.json.user.mentions = true;
+	    self.json.user.unread_messages = false;
+	    self.json.user.mentions = false;
+	    self.json.user.being_called = false;
+		
+	    if (document.querySelector('[class^="numberBadge-"]'))
+		self.json.user.mentions = true;
             if (Object.values(NeatoLib.Modules.get("getUnreadGuilds").getUnreadGuilds()).length > 0)
                 self.json.user.unread_messages = true;
             if (getCalls().filter(function(x){return x.ringing.length > 0;}).length > 0)
